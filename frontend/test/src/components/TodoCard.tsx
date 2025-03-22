@@ -6,11 +6,9 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Todo } from "@/models/Todo";
-import { CheckSquare, Edit, Square, Timer, Trash } from "lucide-react";
-import { Button } from "./ui/button";
-import { toast } from "sonner";
-import PopupCreate from "./PopupCreate";
+import { CheckSquare, Square, Timer, Trash } from "lucide-react";
 import PopupEdit from "./PopupEdit";
+import { Button } from "./ui/button";
 
 interface TodoProps {
   todo: Todo;
