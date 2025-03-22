@@ -25,4 +25,8 @@ class TodoController
     {
         echo Todo::createTodo($name, $description);
     }
+    public static function changeTodo($id, $name, $description)
+    {
+        echo Todo::changeTodo($id,$name, $description);
+    }
 }

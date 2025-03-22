@@ -11,34 +11,44 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { Todo } from "@/models/Todo";
+import { Edit, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function PopupCreate() {
+export default function PopupEdit({ todo: t }: { todo: Todo }) {
   const [open, setOpen] = useState(false);
+  const [name, setName] = useState<string>(t.name);
+  const [desc, setDesc] = useState<string>(t.description);
+
+  const handleName = (e: any) => setName(e.target.value);
+  const handleDesc = (e: any) => setDesc(e.target.value);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-2">
-          <Plus />
-          Add Todo
+        <Button className="cursor-pointer hover:opacity-65">
+          <Edit />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-110 min-w-max bg-white sm:max-w-110 dark:bg-black">
+      <DialogContent className="min-w-max bg-white w-110 sm:max-w-110 dark:bg-black">
         <form
-          action="http://localhost/lab1/backend/routes/todos.php"
+          action="http://localhost/lab1/backend/routes/change.php"
           method="POST"
         >
           <DialogHeader>
-            <DialogTitle>Add Todo</DialogTitle>
-            <DialogDescription>
-              Add a new task to your to-do list by providing a name and a brief
-              <br />
-              description of the task.
-            </DialogDescription>
+            <DialogTitle>Edit Todo</DialogTitle>
+            <DialogDescription>"Editing"</DialogDescription>
           </DialogHeader>
           <div className="py-4">
+            <Input
+              type="text"
+              value={t.id}
+              name="id"
+              id="id"
+              required
+              className="hidden"
+            />
             <div className="mb-3 space-y-3">
               <Label htmlFor="name" className="text-right">
                 Name
@@ -46,6 +56,8 @@ export default function PopupCreate() {
               <Input
                 id="name"
                 name="name"
+                value={name}
+                onChange={handleName}
                 className="max-w-100 overflow-auto"
                 required
               />
@@ -56,6 +68,8 @@ export default function PopupCreate() {
               </Label>
               <Textarea
                 id="message"
+                value={desc}
+                onChange={handleDesc}
                 name="description"
                 className="max-h-50 max-w-100 overflow-auto lg:max-h-100"
                 required
@@ -65,15 +79,15 @@ export default function PopupCreate() {
           <DialogFooter>
             <Button
               onClick={() =>
-                toast("Todo Created", {
-                  description: "todo will appear in the list shortly",
+                toast("Todo Edited", {
+                  description: `You have edited Todo:${t.name}`,
                 })
               }
               variant="outline"
               className="cursor-pointer"
               type="submit"
             >
-              <Plus /> Add
+              <Edit /> Edit
             </Button>
           </DialogFooter>
         </form>

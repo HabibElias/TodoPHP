@@ -18,8 +18,6 @@ class Todo
 
         return $todos;
     }
-
-
     public static function completed()
     {
         global $conn;
@@ -55,6 +53,19 @@ class Todo
         global $conn;
         $stmt = $conn->prepare('INSERT INTO todo (stat, description, name) VALUES (false, ?, ?)');
         $stmt->bind_param('ss', $description, $name);
+        $stmt->execute();
+
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        return json_encode(["success" => true]);
+    }
+    public static function changeTodo($id, $name, $description)
+    {
+        if (!$name || !$id) {
+            return json_encode(["success" => $id, "message" => "Invalid Inputs"]);
+        }
+        global $conn;
+        $stmt = $conn->prepare('UPDATE todo set name = ?, description = ? where id = ?');
+        $stmt->bind_param('ssi', $name, $description, $id);
         $stmt->execute();
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);

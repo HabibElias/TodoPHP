@@ -6,45 +6,43 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Todo } from "@/models/Todo";
-import { CheckSquare, Square, Timer, Trash } from "lucide-react";
+import { CheckSquare, Edit, Square, Timer, Trash } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import PopupCreate from "./PopupCreate";
+import PopupEdit from "./PopupEdit";
 
 interface TodoProps {
   todo: Todo;
 }
 
 export default function TodoCard({
-  todo: { id, name, description, stat },
+  todo:t,
 }: TodoProps) {
   const deleteTodo = async (id: number) => {
-    const result = await fetch(
-      `http://localhost/lab1/backend/routes/deleteTodo.php?id=${id}`,
-    ).then((res) => res.json());
-
-    return toast("Todo Deleted", { description: result.success });
+    await fetch(`http://localhost/lab1/backend/routes/deleteTodo.php?id=${id}`);
   };
 
   const changeStat = async (id: number) => {
-    await fetch(`http://localhost/lab1/backend/routes/changeStat.php?id=${id}`);
+    await fetch(`http://localhost/lab1/backend/routes/change.php?id=${id}`);
   };
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <h3 className="text-lg font-semibold">{name}</h3>
+          <h3 className="text-lg font-semibold">{t.name}</h3>
           <Badge
             variant={
-              stat === "completed"
+              t.stat === "completed"
                 ? "default"
-                : stat === "in-progress"
+                : t.stat === "in-progress"
                   ? "secondary"
                   : "outline"
             }
             className="ml-2"
           >
-            {!(stat == "0") ? (
+            {!(t.stat == "0") ? (
               "done"
             ) : (
               <>
@@ -57,24 +55,24 @@ export default function TodoCard({
       </CardHeader>
       <CardContent>
         <p
-          className={`${stat == "1" ? "line-through opacity-20" : "text-muted-foreground"} text-sm break-words`}
+          className={`${t.stat == "1" ? "line-through opacity-20" : "text-muted-foreground"} text-sm break-words`}
         >
-          {description}
+          {t.description}
         </p>
       </CardContent>
       <CardFooter className="text-muted-foreground flex items-center justify-between border-t pt-2 text-xs">
-        <span>ID: {id}</span>
+        <PopupEdit todo={t} />
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => changeStat(id)}
+            onClick={() => changeStat(t.id)}
             variant={"outline"}
             className="cursor-pointer"
           >
-            {stat == "0" ? <Square /> : <CheckSquare />}
+            {t.stat == "0" ? <Square /> : <CheckSquare />}
           </Button>
           <Button
             variant={"secondary"}
-            onClick={() => deleteTodo(id)}
+            onClick={() => deleteTodo(t.id)}
             className="cursor-pointer bg-red-300 text-black dark:text-gray-200"
           >
             <Trash />
